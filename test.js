@@ -1,28 +1,52 @@
-const { spawn } = require('child_process');
-const request = require('request');
-const test = require('tape');
+"use strict"; 
+var webdriver = require("selenium-webdriver"),
+SeleniumServer = require("selenium-webdriver/remote").SeleniumServer;
+ 
+var cbtHub = "http://hub.crossbrowsertesting.com:80/wd/hub";
 
-// Start the app
-const env = Object.assign({}, process.env, {PORT: 5000});
-const child = spawn('node', ['index.js'], {env});
+var username = process.env.CBT_USER; //replace with your email address 
+var authkey = process.env.CBT_AUTH_KEY; //replace with your authkey  
 
-test('responds to requests', (t) => {
-  t.plan(4);
+var caps = {
+    name : 'Basic Test Example',
+    build :  '1.0',
+    version : '70', 
+    platform : 'Windows 10', 
+    screen_resolution : '1366x768',
+    record_video : 'true',
+    record_network : 'false',
+    browserName : 'Chrome',
+    username : username,
+    password : authkey
+};
 
-  // Wait until the server is ready
-  child.stdout.on('data', _ => {
-    // Make a request to our app
-    request('http://127.0.0.1:5000', (error, response, body) => {
-      // stop the server
-      child.kill();
 
-      // No error
-      t.false(error);
-      // Successful response
-      t.equal(response.statusCode, 200);
-      // Assert content checks
-      t.notEqual(body.indexOf("<title>Node.js Getting Started on Heroku</title>"), -1);
-      t.notEqual(body.indexOf("Getting Started with Node on Heroku"), -1);
-    });
-  });
-});
+async function basicExample(){
+    try{
+        var driver = new webdriver.Builder()
+            .usingServer(cbtHub)
+            .withCapabilities(caps)
+            .build(); 
+
+
+        await driver.get('https://afternoon-refuge-41110.herokuapp.com/');
+
+        await driver.getTitle().then(function(title) {
+                    console.log("The title is: " + title)
+            });
+
+        driver.quit();
+    }
+
+    catch(err){
+        handleFailure(err, driver)
+    }
+
+}
+
+basicExample();
+
+function handleFailure(err, driver) {
+     console.error('Something went wrong!\n', err.stack, '\n');
+     driver.quit();
+} 

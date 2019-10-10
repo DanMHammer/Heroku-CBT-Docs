@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "request": "^2.81.0",
+    "selenium-webdriver": "^4.0.0-alpha.5",
     "tape": "^4.7.0"
   },
   "repository": {

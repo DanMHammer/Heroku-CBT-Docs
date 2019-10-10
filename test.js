@@ -13,7 +13,7 @@ var request = require('request');
 var remoteHub = 'http://hub.crossbrowsertesting.com:80/wd/hub';
 
 var caps = {
-    name : 'Login Form Example',
+    name : 'Heroku CI Example',
     build :  '1.0',
     version : '70', 
     platform : 'Windows 10', 
